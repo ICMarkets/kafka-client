@@ -44,8 +44,32 @@ function stream (topic) {
     })
 }
 
+function filter (topic, key_handler) {
+    return signal(emit => {
+        var client = new Kafka.KafkaClient({kafkaHost})
+        client.on('error', on_error)
+        client.on('ready', () =>
+            new Kafka.Offset(client).fetch([{ topic, time: -1}], (error, offsets_per_partitions) => {
+                if (error) on_error(error)
+                var offset = offsets_per_partitions[topic]['0'][0] - 1
+                var consumer = new Kafka.Consumer(
+                    client,
+                    [{topic, offset}],
+                    {
+                        fromOffset: true,
+                        groupId: String(Date.now()) + Math.random(),
+                        encoding: 'buffer'
+                    }
+                )
+                consumer.on('error',  on_error)
+                consumer.on('message', message => key(message.key) && emit(decode(message.value)))
+            })
+        )
+    })
+}
+
 module.exports = _ => {
     kafkaHost = _;
 
-    return {send, stream};
+    return {send, stream, filter};
 }
