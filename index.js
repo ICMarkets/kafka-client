@@ -44,7 +44,7 @@ function stream (topic) {
     })
 }
 
-function filter (topic, key_handler) {
+function filter (topic, key) {
     return signal(emit => {
         var client = new Kafka.KafkaClient({kafkaHost})
         client.on('error', on_error)
