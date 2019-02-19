@@ -1,5 +1,6 @@
 var {signal} = require('signal');
 var Kafka = require('kafka-node');
+var KeyedMessage = Kafka.KeyedMessage;
 var {encode, decode} = require('msgpack5')();
 var logger = require('js-logger');
 var on_error = error => {logger.error(error);process.exit(1)};
@@ -11,7 +12,7 @@ function create_producer (cb) {
     client.on('error', () => producer = null)
     client.on('ready', () => {
         producer = new Kafka.Producer(client);
-        cb()
+        producer.on('ready', cb)
     })
 }
 
@@ -21,7 +22,7 @@ function send (topic, message, done) {
 }
 
 function send_key (topic, key, message, done) {
-    if (producer) producer.send([{topic, key, messages: encode(message)}], done || skip)
+    if (producer) producer.send([{topic, key, messages: [encode(message)]}], done || skip)
     else create_producer(() => send(topic, message, done))
 }
 
@@ -91,7 +92,7 @@ function filter (topic, key) {
                     }
                 )
                 consumer.on('error',  on_error)
-                consumer.on('message', message => key(message.key) && emit(decode(message.value)))
+                consumer.on('message', message => key(String(message.key)) && emit(decode(message.value)))
             })
         )
     })
