@@ -11,8 +11,18 @@ function create_producer (cb) {
     var client = new Kafka.KafkaClient({kafkaHost})
     client.on('error', () => producer = null)
     client.on('ready', () => {
-        producer = new Kafka.Producer(client);
-        producer.on('ready', cb)
+        var p = new Kafka.Producer(client);
+        var timeout = setTimeout(() => create_producer(cb), 1000);
+        p.on('ready', () => {
+            producer = p;
+            clearTimeout(timeout);
+            cb()
+        });
+        p.on('error', err => {
+            logger.error(err);
+            producer = null;
+            create_producer(cb);
+        });
     })
 }
 
@@ -22,7 +32,7 @@ function send (topic, message, done) {
 }
 
 function send_key (topic, key, message, done) {
-    if (producer) producer.send([{topic, key, messages: [encode(message)]}], done || skip)
+    if (producer) console.log('send_key', topic, key) || producer.send([{topic, key, messages: [encode(message)]}], done || skip)
     else create_producer(() => send(topic, message, done))
 }
 
