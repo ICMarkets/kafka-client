@@ -15,7 +15,7 @@
     "nyc": "13.3.0"
   },
   "scripts": {
-    "test": "nyc mocha",
+    "test": "nyc mocha -b --exit",
     "coverage": "nyc report --reporter=text-lcov | coveralls"
   },
   "repository": {

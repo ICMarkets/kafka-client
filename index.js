@@ -7,6 +7,30 @@ var on_error = error => {logger.error(error);process.exit(1)};
 var skip = () => null;
 var producer;
 
+var retry_count = 5;
+var count = retry_count;
+var min_timeout = 0;
+var max_timeout = 30 * 60 * 1000;
+var default_step = 1000;
+var step = default_step;
+var time = min_timeout;
+var reset_timeout = () => {
+    count = retry_count;
+    time = min_timeout;
+    step = default_step;
+};
+var timeout = () => {
+    if (count > 0) {
+        count -= 1;
+        return time;
+    }
+    if (time > max_timeout) {
+        return max_timeout;
+    }
+    time += step;
+    return time;
+};
+
 function create_producer (cb) {
     var client = new Kafka.KafkaClient({kafkaHost})
     client.on('error', () => producer = null)
@@ -16,13 +40,14 @@ function create_producer (cb) {
         p.on('ready', () => {
             producer = p;
             clearTimeout(timeout);
+            reset_timeout();
             cb()
         });
         p.on('error', err => {
             clearTimeout(timeout);
             logger.error(err);
             producer = null;
-            create_producer(cb);
+            setTimeout(() => create_producer(cb), timeout());
         });
     })
 }
@@ -33,7 +58,7 @@ function send (topic, message, done) {
 }
 
 function send_key (topic, key, message, done) {
-    if (producer) producer.send([{topic, key, messages: [encode(message)]}], done || skip)
+    if (producer) console.log('send_key', topic, key) || producer.send([{topic, key, messages: [encode(message)]}], done || skip)
     else create_producer(() => send(topic, message, done))
 }
 
