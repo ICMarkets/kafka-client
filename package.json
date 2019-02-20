@@ -7,7 +7,7 @@
     "js-logger": "1.6.0",
     "kafka-node": "4.0.1",
     "msgpack5": "4.2.1",
-    "signal": "github:spirinvladimir/signal"
+    "signal": "github:spirinvladimir/signal#v1.1.0"
   },
   "devDependencies": {
     "coveralls": "3.0.2",
