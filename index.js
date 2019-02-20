@@ -56,7 +56,7 @@ function send (topic, message, done) {
 }
 
 function send_key (topic, key, message, done) {
-    if (producer) console.log('send_key', topic, key) || producer.send([{topic, key, messages: [encode(message)]}], done || skip)
+    if (producer) producer.send([{topic, key, messages: [encode(message)]}], done || skip)
     else create_producer(() => send(topic, message, done))
 }
 
