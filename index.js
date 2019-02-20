@@ -7,12 +7,46 @@ var on_error = error => {logger.error(error);process.exit(1)};
 var skip = () => null;
 var producer;
 
+var retry_count = 5;
+var count = retry_count;
+var min_timeout = 0;
+var max_timeout = 30 * 60 * 1000;
+var step = 1000;
+var time = min_timeout;
+var reset_timeout = () => {
+    count = retry_count;
+    time = min_timeout;
+};
+var timeout = () => {
+    if (count > 0) {
+        count -= 1;
+        return min_timeout;
+    }
+    if (time > max_timeout) {
+        return max_timeout;
+    }
+    time += step;
+    return time;
+};
+
 function create_producer (cb) {
     var client = new Kafka.KafkaClient({kafkaHost})
     client.on('error', () => producer = null)
     client.on('ready', () => {
-        producer = new Kafka.Producer(client);
-        producer.on('ready', cb)
+        var p = new Kafka.Producer(client);
+        var timeout = setTimeout(() => create_producer(cb), 1000);
+        p.on('ready', () => {
+            producer = p;
+            clearTimeout(timeout);
+            reset_timeout();
+            cb()
+        });
+        p.on('error', err => {
+            clearTimeout(timeout);
+            logger.error(err);
+            producer = null;
+            setTimeout(() => create_producer(cb), timeout());
+        });
     })
 }
 

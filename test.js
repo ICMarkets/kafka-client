@@ -1,4 +1,4 @@
-var kafkaHost = 'kafka.devicm:9092';
+var kafkaHost = 'kafka.dev.icm:9092';
 var kafka = require('./index')(kafkaHost);
 var topic   = 'test-topic-encoded-with-messagepack-print-pow2' + Math.random();
 var message = 1;
