@@ -19,6 +19,7 @@ function create_producer (cb) {
             cb()
         });
         p.on('error', err => {
+            clearTimeout(timeout);
             logger.error(err);
             producer = null;
             create_producer(cb);
