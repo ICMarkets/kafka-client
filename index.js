@@ -1,4 +1,4 @@
-var {signal} = require('signal');
+var {signal_changes} = require('signal');
 var Kafka = require('kafka-node');
 var KeyedMessage = Kafka.KeyedMessage;
 var {encode, decode} = require('msgpack5')();
@@ -61,7 +61,7 @@ function send_key (topic, key, message, done) {
 }
 
 function stream (topic) {
-    return signal(emit => {
+    return signal_changes(emit => {
         var client = new Kafka.KafkaClient({kafkaHost})
         client.on('error', on_error)
         client.on('ready', () =>
@@ -85,7 +85,7 @@ function stream (topic) {
 }
 
 function stream_group (topic, groupId) {
-    return signal(emit => {
+    return signal_changes(emit => {
         var client = new Kafka.KafkaClient({kafkaHost})
         client.on('error', on_error)
         client.on('ready', () =>
@@ -109,7 +109,7 @@ function stream_group (topic, groupId) {
 }
 
 function filter (topic, key) {
-    return signal(emit => {
+    return signal_changes(emit => {
         var client = new Kafka.KafkaClient({kafkaHost})
         client.on('error', on_error)
         client.on('ready', () =>
