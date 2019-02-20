@@ -11,18 +11,16 @@ var retry_count = 5;
 var count = retry_count;
 var min_timeout = 0;
 var max_timeout = 30 * 60 * 1000;
-var default_step = 1000;
-var step = default_step;
+var step = 1000;
 var time = min_timeout;
 var reset_timeout = () => {
     count = retry_count;
     time = min_timeout;
-    step = default_step;
 };
 var timeout = () => {
     if (count > 0) {
         count -= 1;
-        return time;
+        return min_timeout;
     }
     if (time > max_timeout) {
         return max_timeout;
