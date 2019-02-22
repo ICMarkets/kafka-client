@@ -18,9 +18,25 @@
     "test": "nyc mocha -b --exit",
     "coverage": "nyc report --reporter=text-lcov | coveralls"
   },
+  "nyc": {
+    "check-coverage": true,
+    "per-file": true,
+    "statements": 1,
+    "branches": 1,
+    "functions": 1,
+    "lines": 1,
+    "include": [
+      "index.js"
+    ],
+    "reporter": [
+      "html",
+      "text-summary"
+    ],
+    "all": true
+  },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ICMarkets/ms2k.git"
+    "url": "git+https://github.com/ICMarkets/sql2k.git"
   },
   "keywords": [
     "mssql",
@@ -30,7 +46,7 @@
   "author": "spirin.vladimir@gmail.com",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/ICMarkets/ms2k/issues"
+    "url": "https://github.com/ICMarkets/sql2k/issues"
   },
-  "homepage": "https://github.com/ICMarkets/ms2k#readme"
+  "homepage": "https://github.com/ICMarkets/sql2k#readme"
 }
