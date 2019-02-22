@@ -4,7 +4,7 @@ var KeyedMessage = Kafka.KeyedMessage;
 var {encode, decode} = require('msgpack5')();
 var logger = require('js-logger');
 var on_error = error => {logger.error(error);process.exit(1)};
-var skip = (err) => null;
+var skip = () => null;
 var global_producer;
 
 var retry_count = 5;
@@ -74,12 +74,12 @@ function create_producer (cb) {
 }
 
 function send (topic, message, done) {
-    if (global_producer) global_producer.send([{topic, messages: encode(message)}], () => console.log('producer.send done', JSON.stringify({topic,message}) ) || (done || skip).call())
+    if (global_producer) global_producer.send([{topic, messages: encode(message)}], done || skip)
     else create_producer(() => send(topic, message, done))
 }
 
 function send_key (topic, key, message, done) {
-    if (global_producer) global_producer.send([{topic, key, messages: [encode(message)]}], () => console.log('producer.send done', JSON.stringify({topic,key,message}) ) || (done || skip).call())
+    if (global_producer) global_producer.send([{topic, key, messages: [encode(message)]}], done || skip)
     else create_producer(() => send(topic, message, done))
 }
 
@@ -149,7 +149,7 @@ function filter (topic, key) {
                     }
                 )
                 consumer.on('error',  on_error)
-                consumer.on('message', message => console.log(String(message.key), decode(message.value)) || key(String(message.key)) && emit(decode(message.value)))
+                consumer.on('message', message => key(String(message.key)) && emit(decode(message.value)))
             })
         )
     })
