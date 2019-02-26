@@ -4,7 +4,7 @@
   "description": "Kafka client over lib kafka-node with stream interface & MessagePack codec",
   "main": "index.js",
   "dependencies": {
-    "js-logger": "1.6.0",
+    "js-logger": "github:ICMarkets/js-logger#master",
     "kafka-node": "4.0.1",
     "msgpack5": "4.2.1",
     "signal": "github:spirinvladimir/signal#v1.1.0"
