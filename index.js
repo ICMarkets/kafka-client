@@ -80,7 +80,7 @@ function send (topic, message, done) {
 
 function send_key (topic, key, message, done) {
     if (global_producer) global_producer.send([{topic, key, messages: [encode(message)]}], done || skip)
-    else create_producer(() => send(topic, message, done))
+    else create_producer(() => send_key(topic, key, message, done))
 }
 
 function stream (topic) {
