@@ -2,9 +2,12 @@ var kafkaHost = 'kafka.dev.icm:9092';
 var kafka = require('./index')(kafkaHost);
 var topic   = 'test-topic-encoded-with-messagepack-print-pow2' + Math.random();
 var message = Math.random();
+var logger = require('js-logger')
+
+logger.setAppName('Test kafka-client')
 
 describe('pub/sub', () =>
-    it('send 1 to topic & get 1 from topic', () =>
+    it('send 1 to topic & get 1 from topic', done =>
         kafka.send(topic, message, () =>
             kafka.stream(topic).onValue(value =>
                 done(
@@ -14,7 +17,7 @@ describe('pub/sub', () =>
                     )))))
 
 describe('req/res', () =>
-    it('send 3 same message should stream with 3 messages', () => {
+    it('send 3 same message should stream with 3 messages', done => {
         var
             same_message = Math.random(),
             messages = [
