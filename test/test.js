@@ -1,5 +1,5 @@
 var kafkaHost = 'kafka.dev.icm:9092';
-var kafka = require('./index')(kafkaHost);
+var kafka = require('../index')(kafkaHost);
 var topic   = 'test-topic-encoded-with-messagepack-print-pow2' + Math.random();
 var message = Math.random();
 var logger = require('js-logger')
