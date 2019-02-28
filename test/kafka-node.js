@@ -57,16 +57,17 @@ describe('kafka stream example', () => {
         });
     });
 
-    it('new message should came to both consumers', done => {
+    it('new message should came to both consumers', function (done) {
+        this.timeout(10000)
         var message = 'payload' + Math.random();
         Promise.all([
             new Promise(resolve => consumer1.on('message', m => resolve(m.value))),
             new Promise(resolve => consumer2.on('message', m => resolve(m.value))),
-            new Promise((resolve, reject) => producer.send([{topic, messages: message}], error => error ? reject() : resolve()))
+            new Promise((resolve, reject) => producer.send([{topic, messages: message}], error => error ? reject(error) : resolve()))
         ]).then(([m1, m2]) => {
             assert.equal(m1, message)
             assert.equal(m2, message)
             done()
-        })
+        }).catch(done)
     })
 })

@@ -5,9 +5,11 @@
   "main": "index.js",
   "dependencies": {
     "js-logger": "github:ICMarkets/js-logger#master",
-    "kafka-node": "4.0.1",
-    "msgpack5": "4.2.1",
-    "signal": "github:spirinvladimir/signal#v1.1.0"
+    "kafka-node": "^4.0.2",
+    "kafka-streams": "^4.8.0",
+    "msgpack5": "^4.2.1",
+    "signal": "github:spirinvladimir/signal#master",
+    "yes-kafka": "^1.0.1"
   },
   "devDependencies": {
     "coveralls": "3.0.2",
@@ -15,7 +17,7 @@
     "nyc": "13.3.0"
   },
   "scripts": {
-    "test": "nyc mocha -b --exit",
+    "test": "mocha test/kafka-node.js",
     "coverage": "nyc report --reporter=text-lcov | coveralls"
   },
   "nyc": {

@@ -1,6 +1,7 @@
-var kafkaHost = 'kafka.dev.icm:9092';
+var kafkaHost = 'kafka.devicm:9092';
+//var kafkaHost = 'ark-03.srvs.cloudkafka.com:9094,ark-02.srvs.cloudkafka.com:9094,ark-01.srvs.cloudkafka.com:9094';
 var kafka = require('../index')(kafkaHost);
-var topic   = 'test-topic-encoded-with-messagepack-print-pow2' + Math.random();
+var topic   = 'test-topic-' + Math.random();
 var message = Math.random();
 var logger = require('js-logger')
 
@@ -34,5 +35,5 @@ describe('req/res', () =>
                 done()
         })
 
-        messages.forEach(message => kafka.send(topic, message))
+        messages.forEach(message => kafka.send(topic, message, e => console.log('sent', e)))
     }))

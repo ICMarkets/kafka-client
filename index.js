@@ -74,7 +74,7 @@ function create_producer (cb) {
 }
 
 function send (topic, message, done) {
-    if (global_producer) global_producer.send([{topic, messages: encode(message)}], done || skip)
+    if (global_producer) console.log(2222)||global_producer.send([{topic, messages: encode(message)}], done || skip)
     else create_producer(() => send(topic, message, done))
 }
 
@@ -137,7 +137,7 @@ function filter (topic, key) {
         client.on('error', on_error)
         client.on('ready', () =>
             new Kafka.Offset(client).fetch([{ topic, time: -1}], (error, offsets_per_partitions) => {
-                if (error) on_error(error)
+                if (error) on_error('!!!!' + error)
                 var offset = offsets_per_partitions[topic]['0'][0] - 1
                 var consumer = new Kafka.Consumer(
                     client,
